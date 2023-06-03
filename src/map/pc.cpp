@@ -5542,31 +5542,31 @@ int pc_insert_card(map_session_data* sd, int idx_card, int idx_equip)
 	struct item_data* item_card = sd->inventory_data[idx_card];
 	bool is_enchantment = sd->inventory_data[idx_card]->equip == 0;
 
-	if(item_eq == nullptr)
+	if (item_eq == nullptr)
 		return 0; //Invalid item index.
-	if(item_card == nullptr)
+	if (item_card == nullptr)
 		return 0; //Invalid card index.
-	if( sd->inventory.u.items_inventory[idx_equip].nameid == 0 || sd->inventory.u.items_inventory[idx_equip].amount < 1 )
+	if (sd->inventory.u.items_inventory[idx_equip].nameid == 0 || sd->inventory.u.items_inventory[idx_equip].amount < 1)
 		return 0; // target item missing
-	if( sd->inventory.u.items_inventory[idx_card].nameid == 0 || sd->inventory.u.items_inventory[idx_card].amount < 1 )
+	if (sd->inventory.u.items_inventory[idx_card].nameid == 0 || sd->inventory.u.items_inventory[idx_card].amount < 1)
 		return 0; // target card missing
-	if( !is_enchantment && item_eq->type != IT_WEAPON && item_eq->type != IT_ARMOR )
+	if (!is_enchantment && item_eq->type != IT_WEAPON && item_eq->type != IT_ARMOR)
 		return 0; // only weapons and armor are allowed
 	if (is_enchantment && item_eq->type != IT_WEAPON && item_eq->type != IT_ARMOR && item_eq->type != IT_SHADOWGEAR)
 		return 0; // only weapons and armor are allowed
-	if( item_card->type != IT_CARD )
+	if (item_card->type != IT_CARD)
 		return 0; // must be a card
-	if( sd->inventory.u.items_inventory[idx_equip].identify == 0 )
+	if (sd->inventory.u.items_inventory[idx_equip].identify == 0)
 		return 0; // target must be identified
-	if( itemdb_isspecial(sd->inventory.u.items_inventory[idx_equip].card[0]) )
+	if (itemdb_isspecial(sd->inventory.u.items_inventory[idx_equip].card[0]))
 		return 0; // card slots reserved for other purposes
-	if( !is_enchantment && (item_eq->equip & item_card->equip) == 0 )
+	if (!is_enchantment && (item_eq->equip & item_card->equip) == 0)
 		return 0; // card cannot be compounded on this item type
-	if( item_eq->type == IT_WEAPON && item_card->equip == EQP_SHIELD )
+	if (item_eq->type == IT_WEAPON && item_card->equip == EQP_SHIELD)
 		return 0; // attempted to place shield card on left-hand weapon.
-	if( item_eq->type == IT_ARMOR && (item_card->equip & EQP_ACC) && ((item_card->equip & EQP_ACC) != EQP_ACC) && ((item_eq->equip & EQP_ACC) != (item_card->equip & EQP_ACC)) )
+	if (item_eq->type == IT_ARMOR && (item_card->equip & EQP_ACC) && ((item_card->equip & EQP_ACC) != EQP_ACC) && ((item_eq->equip & EQP_ACC) != (item_card->equip & EQP_ACC)))
 		return 0; // specific accessory-card can only be inserted to specific accessory.
-	if( sd->inventory.u.items_inventory[idx_equip].equip != 0 )
+	if (sd->inventory.u.items_inventory[idx_equip].equip != 0)
 		return 0; // item must be unequipped
 
 	if (is_enchantment) {
@@ -5583,16 +5583,16 @@ int pc_insert_card(map_session_data* sd, int idx_card, int idx_equip)
 	// remember the card id to insert
 	nameid = sd->inventory.u.items_inventory[idx_card].nameid;
 
-	if( pc_delitem(sd,idx_card,1,1,0,LOG_TYPE_OTHER) == 1 )
+	if (pc_delitem(sd, idx_card, 1, 1, 0, LOG_TYPE_OTHER) == 1)
 	{// failed
-		clif_insert_card(sd,idx_equip,idx_card,1);
+		clif_insert_card(sd, idx_equip, idx_card, 1);
 	}
 	else
 	{// success
 		log_pick_pc(sd, LOG_TYPE_OTHER, -1, &sd->inventory.u.items_inventory[idx_equip]);
 		sd->inventory.u.items_inventory[idx_equip].card[i] = nameid;
-		log_pick_pc(sd, LOG_TYPE_OTHER,  1, &sd->inventory.u.items_inventory[idx_equip]);
-		clif_insert_card(sd,idx_equip,idx_card,0);
+		log_pick_pc(sd, LOG_TYPE_OTHER, 1, &sd->inventory.u.items_inventory[idx_equip]);
+		clif_insert_card(sd, idx_equip, idx_card, 0);
 		nullpo_retv(sd);
 		clif_inventorylist(sd);
 	}
